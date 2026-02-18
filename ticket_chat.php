@@ -269,7 +269,10 @@ $backUrl = $role === 'systems' ? 'dashboard_system.php' : 'dashboard_user.php';
 
         <section class="card chat-thread">
             <h2>Conversación por caso</h2>
-            <div class="typing-indicator muted" id="typingIndicator" style="display:none;"></div>
+            <div class="typing-indicator" id="typingIndicator" style="display:none;">
+                <span class="typing-name" id="typingName"></span>
+                <span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            </div>
             <div class="chat-messages" id="chatMessages" data-last-id="<?php echo $lastMessageId; ?>">
                 <?php foreach ($messages as $msg): ?>
                     <?php $mine = $msg['sender_id'] === $userId; ?>
@@ -326,6 +329,7 @@ $backUrl = $role === 'systems' ? 'dashboard_system.php' : 'dashboard_user.php';
   const noMessagesText = document.getElementById('noMessagesText');
   const sendError = document.getElementById('sendError');
   const typingIndicator = document.getElementById('typingIndicator');
+  const typingName = document.getElementById('typingName');
   let lastMessageId = Number(chatMessages?.dataset.lastId || 0);
   let typingTimeout = null;
   let isTypingSent = false;
@@ -386,13 +390,13 @@ $backUrl = $role === 'systems' ? 'dashboard_system.php' : 'dashboard_user.php';
   function renderTyping(names) {
     if (!names || names.length === 0) {
       typingIndicator.style.display = 'none';
-      typingIndicator.textContent = '';
+      if (typingName) typingName.textContent = '';
       return;
     }
 
     const displayName = names[0];
-    typingIndicator.style.display = 'block';
-    typingIndicator.textContent = `${displayName} está escribiendo... · · ·`;
+    typingIndicator.style.display = 'inline-flex';
+    if (typingName) typingName.textContent = `${displayName} está escribiendo`;
   }
 
   async function apiRequest(url, options = {}) {
@@ -436,6 +440,20 @@ $backUrl = $role === 'systems' ? 'dashboard_system.php' : 'dashboard_user.php';
     sendTyping(true);
     clearTimeout(typingTimeout);
     typingTimeout = setTimeout(() => sendTyping(false), 1200);
+  });
+
+
+  messageInput?.addEventListener('blur', () => {
+    sendTyping(false);
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (!isTypingSent) return;
+    navigator.sendBeacon(`ticket_chat.php?api=1`, new URLSearchParams({
+      action: 'typing',
+      ticket_id: String(ticketId),
+      is_typing: '0',
+    }));
   });
 
   form?.addEventListener('submit', async (event) => {
