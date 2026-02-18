@@ -1,5 +1,5 @@
 (function () {
-  const mount = document.getElementById('calendar');
+  const mount = document.getElementById('calendarWidget') || document.getElementById('calendar');
   if (!mount) return;
 
   const events = Array.isArray(window.ticketEvents) ? window.ticketEvents : [];
@@ -14,24 +14,20 @@
 
   function groupEvents() {
     const map = new Map();
-
     events.forEach((ticket) => {
       const createdKey = normalizeDate(ticket.created_at);
       const scheduledKey = normalizeDate(ticket.scheduled_date);
-
       if (createdKey) {
         const arr = map.get(createdKey) || [];
         arr.push({ label: `#${ticket.id} registrado`, type: 'created' });
         map.set(createdKey, arr);
       }
-
       if (scheduledKey) {
         const arr = map.get(scheduledKey) || [];
         arr.push({ label: `#${ticket.id} planificado`, type: 'scheduled' });
         map.set(scheduledKey, arr);
       }
     });
-
     return map;
   }
 
