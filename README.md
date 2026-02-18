@@ -10,6 +10,8 @@ Sistema profesional de gestión de casos entre todas las áreas de una empresa y
 - Dashboard de Sistemas con calendario operativo.
 - Filtros inteligentes y sugerencias rápidas para soporte.
 - **Chat por caso** entre solicitante y Sistemas.
+- Indicador en tiempo real de "está escribiendo..." (3 puntos) entre ambas partes.
+- Mensajes en tiempo real sin recargar la página (envío y recepción automática).
 - **Adjuntos de evidencia** por mensaje (JPG, PNG, WEBP, PDF hasta 10MB).
 - Menú lateral en paneles para navegación más clara.
 

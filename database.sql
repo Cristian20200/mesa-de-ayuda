@@ -55,6 +55,17 @@ CREATE TABLE IF NOT EXISTS message_attachments (
     CONSTRAINT fk_attachments_message FOREIGN KEY (message_id) REFERENCES ticket_messages(id) ON DELETE CASCADE
 );
 
+
+CREATE TABLE IF NOT EXISTS ticket_typing_status (
+    ticket_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED NOT NULL,
+    is_typing TINYINT(1) NOT NULL DEFAULT 0,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (ticket_id, user_id),
+    CONSTRAINT fk_typing_ticket FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
+    CONSTRAINT fk_typing_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 INSERT INTO users (full_name, email, area, password_hash, role)
 VALUES (
     'Equipo de Sistemas',

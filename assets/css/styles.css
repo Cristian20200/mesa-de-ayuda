@@ -99,6 +99,13 @@ input, select, textarea { width: 100%; border: 1px solid #cfd8ee; border-radius:
 .assistant-content ul { padding-left: 1rem; }
 
 .chat-thread { max-height: 65vh; overflow: hidden; }
+
+.typing-indicator {
+  margin-bottom: .55rem;
+  font-size: .88rem;
+  font-style: italic;
+}
+
 .chat-messages { display: grid; gap: .65rem; max-height: 50vh; overflow: auto; padding-right: .2rem; }
 .chat-bubble { border-radius: 12px; padding: .7rem .8rem; max-width: 78%; border: 1px solid var(--border); background: #f8fbff; }
 .chat-bubble.mine { justify-self: end; background: #dbeafe; border-color: #bfdbfe; }
