@@ -269,10 +269,6 @@ $backUrl = $role === 'systems' ? 'dashboard_system.php' : 'dashboard_user.php';
 
         <section class="card chat-thread">
             <h2>Conversación por caso</h2>
-            <div class="typing-indicator" id="typingIndicator" style="display:none;">
-                <span class="typing-name" id="typingName"></span>
-                <span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            </div>
             <div class="chat-messages" id="chatMessages" data-last-id="<?php echo $lastMessageId; ?>">
                 <?php foreach ($messages as $msg): ?>
                     <?php $mine = $msg['sender_id'] === $userId; ?>
@@ -298,6 +294,10 @@ $backUrl = $role === 'systems' ? 'dashboard_system.php' : 'dashboard_user.php';
                     </article>
                 <?php endforeach; ?>
                 <?php if (!$messages): ?><p class="muted" id="noMessagesText">No hay mensajes aún. Inicia la conversación del caso.</p><?php endif; ?>
+                <div class="typing-indicator chat-inline-typing" id="typingIndicator" style="display:none;">
+                    <span class="typing-name" id="typingName"></span>
+                    <span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                </div>
             </div>
         </section>
 
@@ -379,7 +379,12 @@ $backUrl = $role === 'systems' ? 'dashboard_system.php' : 'dashboard_user.php';
     messages.forEach((msg) => {
       const exists = chatMessages.querySelector(`[data-message-id="${msg.id}"]`);
       if (exists) return;
-      chatMessages.insertAdjacentHTML('beforeend', messageHtml(msg));
+      const typingNode = document.getElementById('typingIndicator');
+      if (typingNode && typingNode.parentElement === chatMessages) {
+        typingNode.insertAdjacentHTML('beforebegin', messageHtml(msg));
+      } else {
+        chatMessages.insertAdjacentHTML('beforeend', messageHtml(msg));
+      }
       lastMessageId = Math.max(lastMessageId, Number(msg.id));
     });
 
