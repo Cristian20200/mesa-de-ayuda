@@ -24,12 +24,13 @@ Sistema profesional de gestión de casos entre todas las áreas de una empresa y
    mysql -u root -p < database.sql
    ```
 2. Ajusta credenciales en `includes/config.php`.
-3. Verifica permisos de escritura sobre `uploads/evidence/`.
-4. Ejecuta servidor local:
+3. Si no existe `uploads/evidence/`, el sistema intentará crearla automáticamente al subir evidencia.
+4. Verifica permisos de escritura sobre `uploads/evidence/` cuando uses hosting/producción.
+5. Ejecuta servidor local:
    ```bash
    php -S 0.0.0.0:8000
    ```
-5. Abre `http://localhost:8000`.
+6. Abre `http://localhost:8000`.
 
 ## Credenciales demo de Sistemas
 - Correo: `sistemas@empresa.com`

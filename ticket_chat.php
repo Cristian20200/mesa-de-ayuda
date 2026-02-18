@@ -63,19 +63,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } elseif (($upload['size'] ?? 0) > $maxSize) {
                     $error = 'El archivo supera 10MB.';
                 } else {
-                    $ext = pathinfo($upload['name'], PATHINFO_EXTENSION);
-                    $storedName = uniqid('evi_', true) . '.' . strtolower((string) $ext);
-                    $relativePath = 'uploads/evidence/' . $storedName;
-                    $absolutePath = __DIR__ . '/' . $relativePath;
+                    $ext = strtolower((string) pathinfo($upload['name'], PATHINFO_EXTENSION));
+                    $ext = $ext !== '' ? $ext : 'bin';
+                    $storedName = uniqid('evi_', true) . '.' . $ext;
+                    $relativeDir = 'uploads/evidence';
+                    $relativePath = $relativeDir . '/' . $storedName;
+                    $absoluteDir = __DIR__ . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'evidence';
+                    $absolutePath = $absoluteDir . DIRECTORY_SEPARATOR . $storedName;
 
-                    if (move_uploaded_file($upload['tmp_name'], $absolutePath)) {
+                    if (!is_dir($absoluteDir) && !mkdir($absoluteDir, 0775, true) && !is_dir($absoluteDir)) {
+                        $error = 'No existe la carpeta de evidencias y no pudo crearse automáticamente.';
+                    } elseif (!is_writable($absoluteDir)) {
+                        $error = 'La carpeta de evidencias no tiene permisos de escritura.';
+                    } elseif (move_uploaded_file($upload['tmp_name'], $absolutePath)) {
                         $origName = $upload['name'];
                         $stmt = $mysqli->prepare('INSERT INTO message_attachments (message_id, original_name, stored_name, file_path, file_type) VALUES (?, ?, ?, ?, ?)');
                         $stmt->bind_param('issss', $messageId, $origName, $storedName, $relativePath, $fileType);
                         $stmt->execute();
                         $stmt->close();
                     } else {
-                        $error = 'No fue posible guardar el archivo adjunto.';
+                        $error = 'No fue posible guardar el archivo adjunto. Verifica permisos de la carpeta uploads/evidence.';
                     }
                 }
             } else {
